@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest tests/e2e --runInBand"
   },
   "dependencies": {
     "axios": "^1.7.4",
@@ -25,8 +26,17 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "jest": "^30.2.0",
     "postcss": "^8.4.41",
+    "selenium-webdriver": "^4.24.0",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "testMatch": [
+      "**/tests/e2e/**/*.js"
+    ]
   }
 }
