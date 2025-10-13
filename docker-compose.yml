@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: lavoux_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: e-commerce
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:7-alpine
+    container_name: lavoux_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lavoux_backend
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      # Point backend to dockerized services
+      MONGODB_URI: ${MONGODB_URI:-}
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_prod}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_SECRET_KEY: ${CLOUDINARY_SECRET_KEY:-}
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME:-}
+      # If your code uses Redis URL env
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lavoux_frontend
+    depends_on:
+      - backend
+    environment:
+      PORT: 5173
+      # If your frontend needs an API endpoint env, set it here and use import.meta.env
+      VITE_API_BASE_URL: http://localhost:4000
+    ports:
+      - "5173:5173"

@@ -1,0 +1,14 @@
+# Global dockerignore for context at repo root
+**/node_modules
+**/.git
+**/.gitignore
+**/.DS_Store
+**/dist
+**/build
+**/coverage
+**/.cache
+**/.vscode
+**/*.log
+**/.env
+**/.env.*
+!.env.example
