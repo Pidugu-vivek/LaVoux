@@ -7,9 +7,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,7 +16,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -37,10 +34,17 @@ jobs:
           CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
         run: npm run test:ci
 
+      - name: Validate DB URI
+        run: |
+          if [ -z "${{ secrets.TEST_MONGODB_URI }}" ]; then
+          echo "Missing TEST_MONGODB_URI secret"; exit 1; fi
+          if ! echo "${{ secrets.TEST_MONGODB_URI }}" | grep -E '^mongodb(\+srv)?:\/\/' >/dev/null; then
+          echo "TEST_MONGODB_URI must start with mongodb:// or mongodb+srv://"; exit 1; fi
+
       - name: Upload coverage report (artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-lcov
-          path: backend/coverage/lcov-report
+          path: coverage/lcov-report
           if-no-files-found: ignore
