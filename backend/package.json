@@ -7,7 +7,9 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --watchAll --verbose",
-    "test:ci": "NODE_OPTIONS=--experimental-vm-modules jest --ci --coverage"
+    "test:ci": "NODE_OPTIONS=--experimental-vm-modules jest --ci --coverage",
+    "load:login": "artillery run artillery-login.yml",
+    "load:multi": "artillery run artillery-multi-user.yml"
   },
   "jest": {
     "testEnvironment": "node",
@@ -44,6 +46,7 @@
     "jest": "^30.2.0",
     "mongodb-memory-server": "^10.2.3",
     "supertest": "^7.1.4",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "artillery": "^2.0.0"
   }
 }

@@ -1,0 +1,35 @@
+config:
+  target: "https://lavoux-backend.onrender.com"
+  phases:
+    - duration: 120
+      arrivalRate: 40
+      name: Multi-user load
+  payload:
+    path: "users.csv"
+    fields:
+      - "email"
+      - "password"
+    order: sequence
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: Login with CSV user, hit protected route
+    flow:
+      - post:
+          url: "/api/user/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "token"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/user/profile"
+          headers:
+            token: "{{ token }}"
+          expect:
+            - statusCode: 200

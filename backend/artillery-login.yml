@@ -1,0 +1,32 @@
+config:
+  target: "https://lavoux-backend.onrender.com"
+  phases:
+    - duration: 60
+      arrivalRate: 20
+      name: Warm-up
+    - duration: 120
+      arrivalRate: 50
+      name: Sustained load
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: Concurrent logins with same user
+    flow:
+      - post:
+          url: "/api/user/login"
+          json:
+            email: "test@example.com"
+            password: "TestPass123!"
+          capture:
+            - json: "$.token"
+              as: "token"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/api/user/profile"
+          headers:
+            token: "{{ token }}"
+          expect:
+            - statusCode: 200
